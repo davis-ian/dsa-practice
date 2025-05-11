@@ -50,6 +50,15 @@ class Heap {
         return this.data[0] ||  null;
     }
 
+    buildHeap(arr) {
+        this.data = [...arr];
+        const startIdx = Math.floor(this.data.length / 2) - 1;
+
+        for (let i = startIdx; i >= 0; i--){
+            this.heapifyDown(i)
+        }
+    }
+
     //Move and element up the tree to resore heap  property
     heapifyUp(index) {
         let current = index;
@@ -89,43 +98,43 @@ class Heap {
         [this.data[i], this.data[j]] = [this.data[j], this.data[i]]
     }
 
-      // Print the tree structure in a readable format
-      printTree(title) {
-        console.log("===========================================");
-        if (title) {
-            console.log(title);
+    // Print the tree structure in a readable format
+    printTree(title) {
+    console.log("===========================================");
+    if (title) {
+        console.log(title);
+    }
+    const arr = this.data;
+    const n = arr.length;
+    const levels = Math.floor(Math.log2(n)) + 1;
+    const maxWidth = Math.pow(2, levels) * 2;
+
+    let index = 0;
+
+    for (let level = 0; level < levels; level++) {
+        const levelCount = Math.pow(2, level);
+        const spaceBetween = Math.floor(maxWidth / levelCount) - 1;
+        const indent = Math.floor(spaceBetween / 2);
+
+        let line = " ".repeat(indent);
+
+        for (let i = 0; i < levelCount && index < n; i++) {
+            line += String(arr[index++]).padStart(2, ' ') + " ".repeat(spaceBetween);
         }
-        const arr = this.data;
-        const n = arr.length;
-        const levels = Math.floor(Math.log2(n)) + 1;
-        const maxWidth = Math.pow(2, levels) * 2;
 
-        let index = 0;
+        console.log(line.trimEnd());
 
-        for (let level = 0; level < levels; level++) {
-            const levelCount = Math.pow(2, level);
-            const spaceBetween = Math.floor(maxWidth / levelCount) - 1;
-            const indent = Math.floor(spaceBetween / 2);
+        // Draw branch line for next level (except last)
+        if (level < levels - 1) {
+            let branchLine = "";
 
-            let line = " ".repeat(indent);
-
-            for (let i = 0; i < levelCount && index < n; i++) {
-                line += String(arr[index++]).padStart(2, ' ') + " ".repeat(spaceBetween);
+            for (let i = 0; i < levelCount && i + Math.pow(2, level) - 1 < n; i++) {
+                branchLine += " ".repeat(indent - 1) + "/ \\" + " ".repeat(spaceBetween - 2);
             }
 
-            console.log(line.trimEnd());
-
-            // Draw branch line for next level (except last)
-            if (level < levels - 1) {
-                let branchLine = "";
-
-                for (let i = 0; i < levelCount && i + Math.pow(2, level) - 1 < n; i++) {
-                    branchLine += " ".repeat(indent - 1) + "/ \\" + " ".repeat(spaceBetween - 2);
-                }
-
-                console.log(branchLine.trimEnd());
-            }
+            console.log(branchLine.trimEnd());
         }
+    }
 
         console.log("===========================================");
     }
@@ -135,13 +144,16 @@ class Heap {
 
 // Example usage for study
 const arr = [1, 3, 5, 4, 6, 13, 10, 9, 8, 15, 17];
+
+
+
 const minHeap = new Heap((a, b) => a < b); // true min-heap
 const maxHeap = new Heap((a, b) => a > b); // true max-heap
 
-arr.forEach(val => {
-    minHeap.enqueue(val);
-    maxHeap.enqueue(val);
-});
+
+minHeap.buildHeap(arr);
+maxHeap.buildHeap(arr);
+
 
 minHeap.printTree("Min Heap");
 maxHeap.printTree("Max Heap");
