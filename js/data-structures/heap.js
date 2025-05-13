@@ -50,6 +50,7 @@ class Heap {
         return this.data[0] ||  null;
     }
 
+    // Bottom-up heapify, similar to python's heapq.heapify()
     buildHeap(arr) {
         this.data = [...arr];
         const startIdx = Math.floor(this.data.length / 2) - 1;
@@ -141,19 +142,9 @@ class Heap {
 
 }
 
-
-// Example usage for study
-const arr = [1, 3, 5, 4, 6, 13, 10, 9, 8, 15, 17];
+export default Heap;
 
 
 
-const minHeap = new Heap((a, b) => a < b); // true min-heap
-const maxHeap = new Heap((a, b) => a > b); // true max-heap
 
 
-minHeap.buildHeap(arr);
-maxHeap.buildHeap(arr);
-
-
-minHeap.printTree("Min Heap");
-maxHeap.printTree("Max Heap");
