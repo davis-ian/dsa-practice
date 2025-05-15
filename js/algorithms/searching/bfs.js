@@ -32,11 +32,11 @@ function buildQueueFromGraph(graph) {
     return queue;
 }
 
-function personIsSeller(name) {
-    return name.includes('z');
+function personIsSeller(name, target) {
+    return name === target;
 }
 
-export function bfs(graph, name) {
+export function bfs(graph, target) {
     const queue = buildQueueFromGraph(graph);
     const searched = {};
 
@@ -45,7 +45,7 @@ export function bfs(graph, name) {
         if (searched[person]) {
             console.log('already checked ', person);
         } else {
-            if (personIsSeller(person)) {
+            if (personIsSeller(person, target)) {
                 console.log('Seller found: ', person);
                 return true;
             }
