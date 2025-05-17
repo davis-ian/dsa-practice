@@ -12,7 +12,27 @@
  * -
  */
 
-function buildGraph() {
+export function buildAltGraph1() {
+    return {
+        start: { a: 6, b: 2 },
+        a: { fin: 1 },
+        b: { a: 3, fin: 5 },
+        fin: {},
+    };
+}
+
+export function buildAltGraph2() {
+    return {
+        start: { a: 5, b: 2 },
+        a: { c: 4, d: 2 },
+        b: { a: 8, d: 7 },
+        c: { fin: 3 },
+        d: { fin: 1 },
+        fin: {},
+    };
+}
+
+export function buildGraph() {
     const graph = {};
     graph['start'] = {};
     graph['start']['a'] = 6;
@@ -30,21 +50,67 @@ function buildGraph() {
     return graph;
 }
 
-export function dijkstra() {
-    const graph = buildGraph();
-    console.log(Object.keys(graph), 'keys');
-    console.log(Object.keys(graph['start']), 'neightbors');
-    console.log(graph['start']['a'], 'a');
-    console.log(graph['start']['b'], 'b');
-
-    const cost = {};
-    cost['a'] = 6;
-    cost['b'] = 2;
-
+export function dijkstra(graph, start, end) {
     const parents = {};
-    parents['a'] = 'start';
-    parents['b'] = 'start';
-    parents['fin'] = null;
-
+    const costs = {};
     const processed = [];
+
+    // Init costs & parents tables
+    for (const n of Object.keys(graph[start])) {
+        costs[n] = graph[start][n];
+        parents[n] = start;
+    }
+    costs[end] = Infinity;
+    parents[end] = null;
+
+    //Find the cheapest node
+    let node = findLowestCostNode(costs, processed);
+    while (node) {
+        let cost = costs[node];
+        let neighbors = graph[node];
+        for (const n of Object.keys(neighbors)) {
+            const newCost = cost + neighbors[n];
+
+            //check whether there a cheaper path to  the  neighbors if this node
+            if (costs[n] > newCost) {
+                costs[n] = newCost;
+                parents[n] = node;
+            }
+        }
+        processed.push(node);
+        // repeat until done for every node in graph
+        node = findLowestCostNode(costs, processed);
+    }
+
+    //  calculate  final path
+    const shortestPath = [];
+    let currentNode = end;
+
+    while (currentNode !== start) {
+        shortestPath.unshift(currentNode);
+        currentNode = parents[currentNode];
+    }
+
+    shortestPath.unshift(start);
+
+    return {
+        path: shortestPath,
+        cost: costs[end],
+    };
+}
+
+function findLowestCostNode(costs, processed) {
+    let lowestCost = Infinity;
+    let lowestCostNeighbor = null;
+    for (const c of Object.keys(costs)) {
+        if (processed.includes(c)) continue;
+
+        const cost = costs[c];
+        if (cost < lowestCost) {
+            lowestCost = cost;
+            lowestCostNeighbor = c;
+        }
+    }
+
+    return lowestCostNeighbor;
 }

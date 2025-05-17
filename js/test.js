@@ -1,5 +1,5 @@
 import { bfs } from './algorithms/searching/bfs.js';
-import { dijkstra } from './algorithms/searching/dijkstra.js';
+import { dijkstra, buildGraph } from './algorithms/searching/dijkstra.js';
 
 // let queue = new Queue();
 
@@ -57,4 +57,8 @@ import { dijkstra } from './algorithms/searching/dijkstra.js';
 //     ],
 // };
 
-dijkstra();
+const graph = buildGraph();
+
+const res = dijkstra(graph, 'start', 'fin');
+
+console.log(res, 'result');
